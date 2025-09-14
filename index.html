@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>مدرسة خالد بن الوليد</title>
+  <style>
+    body {
+      background-color: rgb(11, 189, 180);
+      font-family: Arial, Tahoma, sans-serif;
+      color: white;
+      text-align: center;
+    }
+    .container {
+      width: 80%;
+      margin: auto;
+      background-color: #1846dd;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+    .logo {
+      width: 100px;
+      height: 80px;
+      border: 2px solid white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+    }
+    .date-time {
+      font-size: 18px;
+    }
+    h2 {
+      margin: 15px 0;
+      color: yellow;
+    }
+    .student-photo {
+      width: 120px;
+      height: 120px;
+      border: 2px solid white;
+      margin: auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    .student-info {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin: 20px auto;
+      width: 70%;
+    }
+    .student-info div {
+      display: flex;
+      justify-content: flex-start;
+      align-items: center;
+      gap: 10px;
+    }
+    .student-info label {
+      width: 120px;
+      text-align: left;
+    }
+    .student-info input {
+      flex: 1;
+      padding: 6px;
+      border: none;
+      border-radius: 4px;
+    }
+
+    /* تعديل الأزرار */
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .buttons button {
+      flex: 1; /* كل زر يأخذ مساحة متساوية */
+      min-width: 120px; /* حد أدنى لتجنب صغر الحجم */
+      padding: 10px 0; /* ارتفاع موحد */
+      font-size: 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: rgb(32, 13, 13);
+      color: white;
+    }
+    .buttons button:hover {
+      background-color: darkred;
+    }
+
+    table {
+      width: 90%;
+      margin: 20px auto;
+      border-collapse: collapse;
+      background: white;
+      color: black;
+    }
+    th, td {
+      border: 1px solid black;
+      padding: 8px;
+      text-align: center;
+    }
+    th {
+      background: #ccc;
+    }
+    .footer {
+      text-align: left;
+      margin-top: 30px;
+      font-size: 14px;
+      color: #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="logo">صورة المدرسة</div>
+      <div>
+        <h3>مدرسة خالد بن الوليد</h3>
+        <p>عمران</p>
+      </div>
+      <div class="date-time">
+        <span id="date"></span> | <span id="time"></span>
+      </div>
+    </div>
+
+    <h2>إدخال البيانات الأساسية للطلاب</h2>
+
+    <div class="student-photo">صورة الطالب</div>
+
+    <div class="student-info">
+      <div>
+        <label>رقم الطالب</label>
+        <input type="text" id="studentId">
+      </div>
+      <div>
+        <label>اسم الطالب</label>
+        <input type="text" id="studentName">
+      </div>
+      <div>
+        <label>تاريخ الميلاد</label>
+        <input type="date" id="dob">
+      </div>
+      <div>
+        <label>الفصل الدراسي</label>
+        <input type="text" id="class">
+      </div>
+      <div>
+        <label>النوع</label>
+        <input type="text" id="gender">
+      </div>
+      <div>
+        <label>العنوان</label>
+        <input type="text" id="address">
+      </div>
+      <div>
+        <label>رقم الهاتف</label>
+        <input type="tel" id="phone">
+      </div>
+    </div>
+
+    <div class="buttons">
+      <button onclick="addStudent()">إضافة طالب</button>
+      <button onclick="deleteStudent()">حذف</button>
+      <button onclick="searchStudent()">بحث</button>
+      <button onclick="showStudents()">عرض الطلاب</button>
+      <button onclick="window.print()">طباعة</button>
+    </div>
+
+    <div id="studentsTable"></div>
+
+    <div class="footer">
+      إعداد المهندس محمد القمادي
+    </div>
+  </div>
+
+  <script>
+    let students = [];
+    function updateDateTime() {
+      let now = new Date();
+      document.getElementById("date").innerText =
+        now.toLocaleDateString("ar-EG");
+      document.getElementById("time").innerText =
+        now.toLocaleTimeString("ar-EG");
+    }
+    setInterval(updateDateTime, 1000);
+    updateDateTime();
+    function addStudent() {
+      let student = {
+        id: document.getElementById("studentId").value,
+        name: document.getElementById("studentName").value,
+        dob: document.getElementById("dob").value,
+        class: document.getElementById("class").value,
+        gender: document.getElementById("gender").value,
+        address: document.getElementById("address").value,
+        phone: document.getElementById("phone").value
+      };
+      if (student.id && student.name) {
+        students.push(student);
+        alert("تمت إضافة الطالب بنجاح ✅");
+        clearInputs();
+      } else {
+        alert("الرجاء إدخال رقم الطالب واسم الطالب على الأقل ❗");
+      }
+    }
+    function deleteStudent() {
+      let id = prompt("أدخل رقم الطالب المراد حذفه:");
+      students = students.filter(s => s.id !== id);
+      alert("تم حذف الطالب (إن وجد) ❌");
+      showStudents();
+    }
+    function searchStudent() {
+      let keyword = prompt("أدخل اسم أو جزء منه للبحث:");
+      let results = students.filter(s => s.name.includes(keyword));
+      displayTable(results);
+    }
+    function showStudents() {
+      displayTable(students);
+    }
+    function displayTable(data) {
+      if (data.length === 0) {
+        document.getElementById("studentsTable").innerHTML =
+          "<p>لا يوجد طلاب مسجلين.</p>";
+        return;
+      }
+      let table = "<table><tr><th>رقم الطالب</th><th>اسم الطالب</th><th>تاريخ الميلاد</th><th>الفصل</th><th>النوع</th><th>العنوان</th><th>الهاتف</th></tr>";
+      data.forEach(s => {
+        table += `<tr>
+          <td>${s.id}</td>
+          <td>${s.name}</td>
+          <td>${s.dob}</td>
+          <td>${s.class}</td>
+          <td>${s.gender}</td>
+          <td>${s.address}</td>
+          <td>${s.phone}</td>
+        </tr>`;
+      });
+      table += "</table>";
+      document.getElementById("studentsTable").innerHTML = table;
+    }
+    function clearInputs() {
+      document.querySelectorAll(".student-info input").forEach(input => input.value = "");
+    }
+  </script>
+</body>
+</html>
